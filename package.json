@@ -13,7 +13,8 @@
     "dev": "quasar dev",
     "build": "quasar build",
     "postinstall": "quasar prepare",
-    "build:pwa": "quasar build -m pwa -d"
+    "build:pwa": "quasar build -m pwa -d",
+    "start": "quasar dev"
   },
   "dependencies": {
     "@quasar/extras": "^1.16.4",
