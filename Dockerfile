@@ -1,5 +1,5 @@
 # 1️⃣ Imagem base
-FROM node:20.20.0-alpine
+FROM node:20.20.0-slim
 
 # 2️⃣ Diretório de trabalho
 WORKDIR /app
