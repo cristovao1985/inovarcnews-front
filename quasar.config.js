@@ -31,7 +31,7 @@ export default defineConfig((ctx) => {
     extras: [
       // 'ionicons-v4',
       // 'mdi-v7',
-      // 'fontawesome-v6',
+      'fontawesome-v6',
       // 'eva-icons',
       // 'themify',
       // 'line-awesome',
@@ -45,6 +45,10 @@ export default defineConfig((ctx) => {
     build: {
       // publicPath: '/',
       vueRouterMode: 'hash', // available values: 'hash', 'history'
+      env: {
+        BASE_URL: 'https://nocodb.lineasoft.com.br/api/v2/tables',
+        XC_TOKEN: '0sryfWLSpBtlL8HD-TQwjJZe4qAu-QVbkm9x6P6m',
+      },
 
       // webpackTranspile: false,
 
@@ -94,7 +98,7 @@ export default defineConfig((ctx) => {
       // directives: [],
 
       // Quasar plugins
-      plugins: [],
+      plugins: ['Notify'],
     },
 
     // animations: 'all', // --- includes all animations

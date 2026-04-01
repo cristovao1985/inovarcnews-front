@@ -1,21 +1,18 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+  <q-layout view="hHh Lpr lff">
+    <q-header elevated class="bg-primary text-white">
       <q-toolbar>
-        <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
-
-        <q-toolbar-title> Quasar App </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
+        <q-toolbar-title class="text-white">INOVARC NEWS</q-toolbar-title>
+        <q-btn flat @click="toggleLeftDrawer" round dense icon="menu" />
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
+    <q-drawer v-model="leftDrawerOpen" show-if-above bordered side="right" v-if="leftDrawerOpen">
       <q-list>
-        <q-item-label header> Essential Links </q-item-label>
-
+        <q-item-label header> INOVARC NEWS </q-item-label>
         <EssentialLink v-for="link in linksList" :key="link.title" v-bind="link" />
       </q-list>
+      <q-btn label="Sair" color="negative" flat class="full-width" @click="logout" />
     </q-drawer>
 
     <q-page-container>
@@ -27,49 +24,32 @@
 <script>
 import { defineComponent, ref } from 'vue'
 import EssentialLink from 'components/EssentialLink.vue'
+import notify from 'src/mixins/notify'
 
 const linksList = [
   {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev',
+    title: 'Postagens',
+    caption: 'Notícias e Vagas de Emprego',
+    icon: 'fa-solid fa-newspaper',
+    link: '/#/',
   },
   {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework',
+    title: 'Publicar',
+    caption: 'Publicar novo conteúdo',
+    icon: 'fa-solid fa-add',
+    link: '/#/publish',
   },
   {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev',
+    title: 'Inovarc',
+    caption: 'Sobre nós',
+    icon: 'fa-solid fa-circle-info',
+    link: '/#/about',
   },
   {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev',
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev',
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev',
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev',
+    title: 'Perfil',
+    caption: 'Dados da minha contas',
+    icon: 'fa-solid fa-user',
+    link: '/#/profile',
   },
 ]
 
@@ -79,7 +59,6 @@ export default defineComponent({
   components: {
     EssentialLink,
   },
-
   setup() {
     const leftDrawerOpen = ref(false)
 
@@ -88,6 +67,11 @@ export default defineComponent({
       leftDrawerOpen,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value
+      },
+      logout() {
+        // Lógica de logout aqui, como limpar tokens, redirecionar para a página de login, etc.
+        notify.methods.notifySuccess('Logout realizado com sucesso!')
+        localStorage.removeItem('user')
       },
     }
   },
