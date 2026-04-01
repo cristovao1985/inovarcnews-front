@@ -1,36 +1,25 @@
-# ---------- STAGE 1: BUILD ----------
-FROM node:20-slim AS build
+# 1️⃣ Imagem base
+FROM node:18-alpine
 
-# Diretório da aplicação
+# 2️⃣ Diretório de trabalho
 WORKDIR /app
 
-# Copia apenas package.json e lock primeiro (melhor cache)
-COPY package*.json ./
-
-# Instala dependências de forma determinística
-RUN npm ci
-
-# Copia o restante do projeto
+# 3️⃣ Copia todos os arquivos do projeto
 COPY . .
 
-# Build do Quasar PWA
+ENV NODE_OPTIONS="--max-old-space-size=1024"
+
+# 4️⃣ Instala dependências
+RUN npm install
+
+# 5️⃣ Build SPA do Quasar
 RUN npm run build:pwa
 
+# 6️⃣ Instala o servidor estático globalmente
+RUN npm install -g serve
 
-# ---------- STAGE 2: PRODUCTION ----------
-FROM nginx:alpine
-
-# Remove config padrão do nginx
-RUN rm -rf /usr/share/nginx/html/*
-
-# Copia build gerado
-COPY --from=build /app/dist/pwa /usr/share/nginx/html
-
-# Copia config custom (SPA fallback)
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Expor porta
+# 7️⃣ Expondo a porta 80
 EXPOSE 80
 
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# 8️⃣ Comando para servir SPA
+CMD ["serve", "-s", "dist/pwa", "-l", "80"]
