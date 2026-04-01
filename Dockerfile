@@ -1,21 +1,36 @@
-# ---------- BUILD ----------
-FROM node:20-alpine AS build
+# ---------- STAGE 1: BUILD ----------
+FROM node:20-slim AS build
 
+# Diretório da aplicação
 WORKDIR /app
+
+# Copia apenas package.json e lock primeiro (melhor cache)
+COPY package*.json ./
+
+# Instala dependências de forma determinística
+RUN npm ci
+
+# Copia o restante do projeto
 COPY . .
 
-RUN npm install
+# Build do Quasar PWA
 RUN npm run build:pwa
 
-# ---------- PRODUCTION ----------
-FROM node:20-alpine
 
-WORKDIR /app
+# ---------- STAGE 2: PRODUCTION ----------
+FROM nginx:alpine
 
-RUN npm install -g serve
+# Remove config padrão do nginx
+RUN rm -rf /usr/share/nginx/html/*
 
-COPY --from=build /app/dist/pwa ./dist/pwa
+# Copia build gerado
+COPY --from=build /app/dist/pwa /usr/share/nginx/html
 
+# Copia config custom (SPA fallback)
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expor porta
 EXPOSE 80
 
-CMD ["serve", "-s", "dist/pwa", "-l", "80"]
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]
