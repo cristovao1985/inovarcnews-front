@@ -12,11 +12,29 @@
       </q-card>
       <q-card v-else flat bordered>
         <q-card-section>
-          <q-chip square class="bg-info text-primary-5" dense>{{ post?.author }} </q-chip>
-          <q-item-label caption>
-            {{ new Date(post.CreatedAt).toLocaleString() }} - {{ readTime(post.content) }} min de
-            leitura
-          </q-item-label>
+          <q-item>
+            <q-item-section>
+              <q-chip square class="bg-info text-primary-5" dense style="max-width: 120px"
+                >{{ post?.author }}
+              </q-chip>
+              <q-item-label caption>
+                {{ new Date(post.CreatedAt).toLocaleString() }} - {{ readTime(post.content) }} min
+                de leitura
+              </q-item-label>
+            </q-item-section>
+            <q-item-section avatar>
+              <q-btn icon="more_vert" flat dense v-if="canEdit(post)">
+                <q-menu>
+                  <q-list style="min-width: 100px">
+                    <q-item clickable v-close-popup :to="`/publish/${post.Id}`">
+                      <q-item-section>Editar</q-item-section>
+                    </q-item>
+                    <q-separator />
+                  </q-list>
+                </q-menu>
+              </q-btn>
+            </q-item-section>
+          </q-item>
         </q-card-section>
         <q-card-section>
           <div class="text-h4">{{ post?.title }}</div>

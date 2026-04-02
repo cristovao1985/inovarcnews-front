@@ -1,12 +1,26 @@
 <template>
   <q-page class="q-ma-md">
-    <h5>Sobre Nós</h5>
-    <p>Bem-vindo à página sobre nós!</p>
+    <span v-html="data.content"></span>
   </q-page>
 </template>
 
 <script>
+import aboutApi from '../../api/about/about.api'
 export default {
   name: 'AboutPage',
+  data() {
+    return {
+      data: {},
+    }
+  },
+  created() {
+    this.getLastAboutContent()
+  },
+  methods: {
+    async getLastAboutContent() {
+      const res = await aboutApi.getAbout()
+      this.data = res.data.list[0]
+    },
+  },
 }
 </script>

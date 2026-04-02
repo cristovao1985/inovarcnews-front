@@ -132,6 +132,14 @@
         <q-item-label caption
           >Sua postagem passará por uma revisão antes de ser publicada.</q-item-label
         >
+        <q-btn
+          outline
+          color="negative"
+          label="Remover postagem"
+          class="full-width"
+          @click="deletePost"
+          v-if="post.Id"
+        />
         <q-card-actions align="right">
           <q-btn label="Cancelar" outline to="/"></q-btn>
           <q-btn label="Publicar" color="positive" @click="publishPost" :loading="loading"></q-btn>
@@ -171,6 +179,10 @@ export default {
       this.notifyWarning('Você precisa estar logado para publicar um conteúdo.')
       this.$router.push('/login')
     }
+
+    if (this.$route.params.id) {
+      this.getPost()
+    }
   },
   methods: {
     async publishPost() {
@@ -181,14 +193,25 @@ export default {
             this.notifySuccess(
               'Postagem enviada com sucesso. Ela passará por uma revisão e será publicada em breve!',
             )
-            postsApi
-              .create(this.post)
-              .then(() => {
-                this.$router.push('/')
-              })
-              .catch(() => {
-                this.notifyError('Erro ao publicar postagem.')
-              })
+            if (this.post.Id) {
+              postsApi
+                .update(this.post)
+                .then(() => {
+                  this.$router.push('/')
+                })
+                .catch(() => {
+                  this.notifyError('Erro ao atualizar postagem.')
+                })
+            } else {
+              postsApi
+                .create(this.post)
+                .then(() => {
+                  this.$router.push('/')
+                })
+                .catch(() => {
+                  this.notifyError('Erro ao publicar postagem.')
+                })
+            }
           } else {
             this.notifyWarning('Por favor, preencha todos os campos.')
           }
@@ -197,6 +220,24 @@ export default {
         console.log(error)
       } finally {
         this.loading = false
+      }
+    },
+    async getPost() {
+      const data = await postsApi.getPost(this.$route.params.id)
+      console.log(data)
+      this.post = data.data
+    },
+    deletePost() {
+      if (confirm('Tem certeza que deseja excluir esta postagem?')) {
+        postsApi
+          .remove(this.post.Id)
+          .then(() => {
+            this.notifySuccess('Postagem excluída com sucesso!')
+            this.$router.push('/')
+          })
+          .catch(() => {
+            this.notifyError('Erro ao excluir postagem.')
+          })
       }
     },
   },
