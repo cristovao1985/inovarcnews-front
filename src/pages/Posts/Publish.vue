@@ -126,7 +126,6 @@
             label="Fonte"
             v-model="post.source"
             placeholder="ex: https://site.com/noticia"
-            v-if="post.type == 'post'"
           ></q-input>
         </q-form>
         <q-separator spaced />
@@ -135,7 +134,7 @@
         >
         <q-card-actions align="right">
           <q-btn label="Cancelar" outline to="/"></q-btn>
-          <q-btn label="Publicar" color="positive" @click="publishPost"></q-btn>
+          <q-btn label="Publicar" color="positive" @click="publishPost" :loading="loading"></q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -159,6 +158,7 @@ export default {
         type: 'post',
       },
       user: {},
+      loafing: false,
     }
   },
   mixins: [notify],
@@ -175,15 +175,15 @@ export default {
   methods: {
     async publishPost() {
       try {
+        this
         this.$refs.form.validate().then((valid) => {
           if (valid) {
+            this.notifySuccess(
+              'Postagem enviada com sucesso. Ela passará por uma revisão e será publicada em breve!',
+            )
             postsApi
               .create(this.post)
               .then(() => {
-                this.notifySuccess(
-                  'Postagem enviada com sucesso. Ela passará por uma revisão e será publicada em breve!',
-                )
-
                 this.$router.push('/')
               })
               .catch(() => {
@@ -195,6 +195,8 @@ export default {
         })
       } catch (error) {
         console.log(error)
+      } finally {
+        this.loading = false
       }
     },
   },

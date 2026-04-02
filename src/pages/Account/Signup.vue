@@ -19,17 +19,35 @@
           lazy-rules
           :rules="[(val) => (val && val.length > 0) || 'Campo obrigatório']"
           v-model="account.email"
+          placeholder="ex: usuario@gmail.com"
         />
         <q-input
           outlined
           label="Digite sua senha"
-          type="password"
+          :type="isPwd ? 'password' : 'text'"
           lazy-rules
           :rules="[(val) => (val && val.length > 0) || 'Campo obrigatório']"
           v-model="account.password"
-        />
+        >
+          <template v-slot:append>
+            <q-icon
+              :name="isPwd ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              @click="isPwd = !isPwd"
+            />
+          </template>
+        </q-input>
+        <a href="/#/terms" target="_blank">Termos e condições</a>
+        <br />
+        <q-checkbox v-model="acceptedTerms" label="Aceito os termos e condições acima" />
         <q-card-actions align="right">
-          <q-btn label="Criar Cadastro" color="positive" @click="validateNickName" />
+          <q-btn label="Já tenho conta" flat to="/login" />
+          <q-btn
+            label="Criar Cadastro"
+            color="positive"
+            @click="validateNickName"
+            :disable="!acceptedTerms"
+          />
         </q-card-actions>
       </q-form>
     </div>
@@ -49,6 +67,8 @@ export default {
         email: '',
         password: '',
       },
+      acceptedTerms: false,
+      isPwd: true,
     }
   },
   mixins: [notify],

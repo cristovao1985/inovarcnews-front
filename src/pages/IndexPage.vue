@@ -1,14 +1,18 @@
 <template>
   <div class="q-pa-md">
-    <div class="q-gutter-y-md">
-      <q-card>
+    <div v-if="loading" class="q-pa-md">
+      <q-linear-progress indeterminate />
+      <q-linear-progress indeterminate color="positive" class="q-mt-sm" />
+      <q-linear-progress indeterminate class="q-mt-sm" />
+    </div>
+    <div class="q-gutter-y-md" v-else>
+      <q-card bordered flat>
         <q-tabs
           v-model="tab"
           dense
           class="text-grey"
           active-color="primary"
           indicator-color="primary"
-          narrow-indicator
         >
           <q-tab name="posts" label="Postagens Recentes" />
           <q-tab name="jobs" label="Vagas de Emprego" />
@@ -71,6 +75,7 @@ export default {
         pageSize: 25,
         totalRows: 9,
       },
+      loading: true,
     }
   },
   created() {
@@ -96,6 +101,8 @@ export default {
         })
       } catch (error) {
         console.error('Error fetching posts:', error)
+      } finally {
+        this.loading = false
       }
     },
     sharePost(post) {

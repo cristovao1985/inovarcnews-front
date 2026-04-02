@@ -17,7 +17,7 @@
       <q-tab-panel name="profile">
         <q-input type="textarea" v-model="account.description" label="Descrição" outlined />
         <q-card-actions align="right">
-          <q-btn label="Salvar" color="positive" @click="update" />
+          <q-btn label="Atualizar Descrição" color="positive" @click="update" />
         </q-card-actions>
       </q-tab-panel>
       <q-tab-panel name="posts">

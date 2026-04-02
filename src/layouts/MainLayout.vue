@@ -3,6 +3,7 @@
     <q-header elevated class="bg-primary text-white">
       <q-toolbar>
         <q-toolbar-title class="text-white">INOVARC NEWS</q-toolbar-title>
+        vBETA
         <q-btn flat @click="toggleLeftDrawer" round dense icon="menu" />
       </q-toolbar>
     </q-header>
@@ -12,7 +13,22 @@
         <q-item-label header> INOVARC NEWS </q-item-label>
         <EssentialLink v-for="link in linksList" :key="link.title" v-bind="link" />
       </q-list>
-      <q-btn label="Sair" color="negative" flat class="full-width" @click="logout" />
+      <q-btn
+        label="Login"
+        color="positive"
+        flat
+        class="full-width"
+        to="/login"
+        v-if="!user?.name"
+      />
+      <q-btn
+        label="Sair"
+        color="negative"
+        flat
+        class="full-width"
+        @click="logout"
+        v-if="user?.name"
+      />
     </q-drawer>
 
     <q-page-container>
@@ -47,7 +63,7 @@ const linksList = [
   },
   {
     title: 'Perfil',
-    caption: 'Dados da minha contas',
+    caption: 'Dados da minha conta',
     icon: 'fa-solid fa-user',
     link: '/#/profile',
   },
@@ -61,17 +77,25 @@ export default defineComponent({
   },
   setup() {
     const leftDrawerOpen = ref(false)
+    const user = JSON.parse(localStorage.getItem('user'))
 
+    if (user) {
+      linksList[3].title = user.name
+    }
     return {
       linksList,
       leftDrawerOpen,
+      user,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value
       },
       logout() {
         // Lógica de logout aqui, como limpar tokens, redirecionar para a página de login, etc.
-        notify.methods.notifySuccess('Logout realizado com sucesso!')
+        notify.methods.notifySuccess(
+          'Logout realizado com sucesso!. Você está navegando de forma anônima.',
+        )
         localStorage.removeItem('user')
+        window.location.reload()
       },
     }
   },
